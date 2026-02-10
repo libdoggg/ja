@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>contact</title>
+    
+     <link rel="stylesheet" href="bootstrap.min.css">
+     <style>
+       body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar */
+        #nav {
+            background-color: rgb(143, 179, 167);
+            width: auto;
+            
+        }
+
+       #nav img{
+    border-radius: 8px;
+    width:20%;
+    margin-left: 10px;
+}
+
+        .log i {
+            color: white;
+            font-size: 22px;
+        }
+
+        #nav li a {
+            color: white;
+            font-size: 18px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            transition: 0.3s ease;
+        }
+
+        #nav li a:hover,
+        #act {
+            background-color: rgb(90, 140, 120);
+            color: white;
+        }
+        #pormm{
+            margin:0px 100px 0px 100px;
+        }
+
+            /* Footer */
+        footer {
+            background-color: rgb(143, 179, 167);
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+            margin-top: auto; /* pushes footer to bottom */
+        }
+        </style>
+</head>
+<body>
+  
+   
+    <!-- Navbar -->
+<nav id="nav" class="navbar navbar-expand-lg navbar-dark">
+
+    <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+        <img src="ham.jpg" alt="Logo" >
+        <label class="log"><i>Hammershop</i></label>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+            <li class="nav-item"><a class="nav-link active" href="home.html" >Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="productss.php">Products</a></li>
+            <li class="nav-item"><a class="nav-link" href="aboutt.html" >About</a></li>
+            <li class="nav-item"><a class="nav-link" href="contactt.html" id="act">Contact</a></li>
+        </ul>
+    </div>
+</nav>
+
+
+
+<form id="pormm">
+  <div class="form-group">
+    <label for="exampleInputEmail1">Email address</label>
+    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+  </div>
+  <div class="form-group">
+    <label for="exampleInputPassword1">Password</label>
+    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+  </div>
+
+  <div class="form-group">
+    <label for="exampleInputPassword1">Problem</label>
+   <input type="text" class="form-control" id="problemInput" placeholder="Problem">
+
+  </div>
+  
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+
+
+
+
+<!-- Footer -->
+<footer>
+    <h5>© 2026 Hammershop. All rights reserved.</h5>
+</footer>
+
+<!-- Bootstrap JS -->
+
+    
+</body>
+</html>

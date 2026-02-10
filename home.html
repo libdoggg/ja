@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar */
+        #nav {
+            background-color: rgb(143, 179, 167);
+        }
+
+       #nav img{
+    border-radius: 8px;
+    width:20%;
+    margin-left: 10px;
+}
+
+        .log i {
+            color: white;
+            font-size: 22px;
+        }
+
+        #nav li a {
+            color: white;
+            font-size: 18px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            transition: 0.3s ease;
+        }
+
+        #nav li a:hover,
+        #act {
+            background-color: rgb(90, 140, 120);
+            color: white;
+        }
+
+        /* Cards */
+        .card img {
+            height: 200px;
+            object-fit: cover;
+        }
+
+        /* Footer */
+        footer {
+            background-color: rgb(143, 179, 167);
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+            margin-top: auto; /* pushes footer to bottom */
+        }
+
+        .carousel-item img {
+    width: 100%;
+    height: 600px;   /* adjust as you like */
+    object-fit: cover;
+}
+
+    </style>
+</head>
+
+<body>
+
+<!-- Navbar -->
+<nav id="nav" class="navbar navbar-expand-lg navbar-dark">
+
+    <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+        <img src="ham.jpg" alt="Logo" >
+        <label class="log"><i>Hammershop</i></label>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+            <li class="nav-item"><a class="nav-link active" href="home.html" id="act">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="productss.php">Products</a></li>
+            <li class="nav-item"><a class="nav-link" href="aboutt.html">About</a></li>
+            <li class="nav-item"><a class="nav-link" href="contactt.html">Contact</a></li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Carousel -->
+<div class="container-fluid p-0 mt-4">
+    <div id="carouselExampleRide" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner" id="caro">
+            <div class="carousel-item active">
+                <img src="ppp.jpg" class="d-block w-100"  alt="Image 1">
+            </div>
+            <div class="carousel-item">
+                <img src="kol.webp" class="d-block w-100" alt="Image 2">
+            </div>
+            <div class="carousel-item">
+                <img src="kool.jpg" class="d-block w-100" alt="Image 3">
+            </div>
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleRide" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleRide" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </button>
+    </div>
+</div>
+
+<!-- Featured -->
+<h1 class="text-center mt-5">Featured</h1>
+<hr class="container">
+
+<div class="container mb-5">
+    <div class="row justify-content-center g-4">
+        <div class="col-md-4 col-lg-3">
+            <div class="card">
+                <img src="mmm.jpg" class="card-img-top" alt="">
+                <div class="card-body">
+                    <h5 class="card-title">Product 1</h5>
+                    <p class="card-text">Product description goes here.</p>
+                    <button class="btn btn-primary w-100">Buy</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-lg-3">
+            <div class="card">
+                <img src="mmm.jpg" class="card-img-top" alt="">
+                <div class="card-body">
+                    <h5 class="card-title">Product 2</h5>
+                    <p class="card-text">Product description goes here.</p>
+                    <button class="btn btn-primary w-100">Buy</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-lg-3">
+            <div class="card">
+                <img src="mmm.jpg" class="card-img-top" alt="">
+                <div class="card-body">
+                    <h5 class="card-title">Product 3</h5>
+                    <p class="card-text">Product description goes here.</p>
+                    <button class="btn btn-primary w-100">Buy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <h5>© 2026 Hammershop. All rights reserved.</h5>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

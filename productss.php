@@ -1,0 +1,167 @@
+<?php include "hmdb.php"; ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Products</title>
+<link rel="stylesheet" href="bootstrap.min.css">
+<Style>
+       body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar */
+        #nav {
+            background-color: rgb(143, 179, 167);
+        }
+
+        #nav img {
+            
+             border-radius: 8px;
+    width:20%;
+    margin-left: 10px;
+        }
+
+        .log i {
+            color: white;
+            font-size: 22px;
+        }
+
+        #nav li a {
+            color: white;
+            font-size: 18px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            transition: 0.3s ease;
+        }
+
+        #nav li a:hover,
+        #act {
+            background-color: rgb(90, 140, 120);
+            color: white;
+        }
+
+            /* Footer */
+        footer {
+            background-color: rgb(143, 179, 167);
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+            margin-top: auto; /* pushes footer to bottom */
+        }
+
+</style>
+</head>
+<body>
+<!-- Navbar -->
+<nav id="nav" class="navbar navbar-expand-lg navbar-dark">
+
+    <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+        <img src="ham.jpg" alt="Logo" >
+        <label class="log"><i>Hammershop</i></label>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+            <li class="nav-item"><a class="nav-link active" href="home.html" >Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="productss.php"id="act">Products</a></li>
+            <li class="nav-item"><a class="nav-link" href="aboutt.html">About</a></li>
+            <li class="nav-item"><a class="nav-link" href="contactt.html">Contact</a></li>
+        </ul>
+    </div>
+</nav>
+
+<div class="row justify-content-center">
+<?php
+// Only select products with stock > 0
+$sql = "SELECT * FROM products WHERE quantity > 0";
+$result = mysqli_query($conn, $sql);
+
+while ($row = mysqli_fetch_assoc($result)) {
+?>
+    <div class="card" style="width: 18rem; margin: 8px;">
+        <img src="<?php echo $row['img']; ?>" class="card-img-top">
+        <div class="card-body">
+            <h5 class="card-title"><?php echo $row['name']; ?></h5>
+            <p class="card-text"><?php echo $row['desc']; ?></p>
+            <p>Price: $<?php echo $row['price']; ?></p>
+            <p>Stock: <?php echo $row['quantity']; ?></p>
+            <button class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#buyModal<?php echo $row['id']; ?>">
+                Buy
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="buyModal<?php echo $row['id']; ?>" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Buy <?php echo $row['name']; ?></h5>
+            <button class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+
+          <div class="modal-body text-center">
+            <img src="<?php echo $row['img']; ?>" width="150">
+            <p>Price: $<?php echo $row['price']; ?></p>
+            <p>Stock: <?php echo $row['quantity']; ?></p>
+            <p>Description: <?php echo $row['desc']; ?></p>
+
+            <div class="d-flex justify-content-center align-items-center gap-2">
+                <button type="button" class="btn btn-outline-secondary" onclick="decreaseQty(<?php echo $row['id']; ?>)">−</button>
+                <input type="number" id="qty<?php echo $row['id']; ?>" value="1" min="1" max="<?php echo $row['quantity']; ?>" class="form-control text-center" style="width:70px;">
+                <button type="button" class="btn btn-outline-secondary" onclick="increaseQty(<?php echo $row['id']; ?>, <?php echo $row['quantity']; ?>)">+</button>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <form method="POST" action="buy.php" onsubmit="setQty(<?php echo $row['id']; ?>)">
+                <input type="hidden" name="product_id" value="<?php echo $row['id']; ?>">
+                <input type="hidden" name="quantity" id="hiddenQty<?php echo $row['id']; ?>">
+                <button type="submit" class="btn btn-primary">Confirm</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+<?php } ?>
+</div>
+
+<!-- Footer -->
+<footer>
+    <h5>© 2026 Hammershop. All rights reserved.</h5>
+</footer>
+
+<!-- Bootstrap JS -->
+
+
+
+<script src="bootstrap.bundle.min.js"></script>
+<script>
+function increaseQty(id, max) {
+    let qty = document.getElementById('qty' + id);
+    if (parseInt(qty.value) < max) qty.value = parseInt(qty.value) + 1;
+}
+
+function decreaseQty(id) {
+    let qty = document.getElementById('qty' + id);
+    if (parseInt(qty.value) > 1) qty.value = parseInt(qty.value) - 1;
+}
+
+function setQty(id) {
+    document.getElementById('hiddenQty' + id).value = document.getElementById('qty' + id).value;
+}
+</script>
+</body>
+</html>
