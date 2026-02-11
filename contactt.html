@@ -1,12 +1,13 @@
+<?php include "hmdb.php"; ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>contact</title>
-    
-     <link rel="stylesheet" href="bootstrap.min.css">
-     <style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Products</title>
+<link rel="stylesheet" href="bootstrap.min.css">
+<Style>
        body {
             min-height: 100vh;
             display: flex;
@@ -16,15 +17,14 @@
         /* Navbar */
         #nav {
             background-color: rgb(143, 179, 167);
-            width: auto;
-            
         }
 
-       #nav img{
-    border-radius: 8px;
+        #nav img {
+            
+             border-radius: 8px;
     width:20%;
     margin-left: 10px;
-}
+        }
 
         .log i {
             color: white;
@@ -44,9 +44,6 @@
             background-color: rgb(90, 140, 120);
             color: white;
         }
-        #pormm{
-            margin:0px 100px 0px 100px;
-        }
 
             /* Footer */
         footer {
@@ -56,12 +53,25 @@
             padding: 15px 0;
             margin-top: auto; /* pushes footer to bottom */
         }
-        </style>
+
+
+        .modal-img {
+    width: 200px;          /* fixed width */
+    height: 200px;         /* fixed height */
+    object-fit: cover;     /* keeps image ratio & crops nicely */
+    border-radius: 8px;
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+
+</style>
 </head>
 <body>
-  
-   
-    <!-- Navbar -->
+<!-- Navbar -->
 <nav id="nav" class="navbar navbar-expand-lg navbar-dark">
 
     <a class="navbar-brand d-flex align-items-center gap-2" href="#">
@@ -76,38 +86,75 @@
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
             <li class="nav-item"><a class="nav-link active" href="home.html" >Home</a></li>
-            <li class="nav-item"><a class="nav-link" href="productss.php">Products</a></li>
-            <li class="nav-item"><a class="nav-link" href="aboutt.html" >About</a></li>
-            <li class="nav-item"><a class="nav-link" href="contactt.html" id="act">Contact</a></li>
+            <li class="nav-item"><a class="nav-link" href="productss.php"id="act">Products</a></li>
+            <li class="nav-item"><a class="nav-link" href="aboutt.html">About</a></li>
+            <li class="nav-item"><a class="nav-link" href="contactt.html">Contact</a></li>
         </ul>
     </div>
 </nav>
 
+<div class="row justify-content-center">
+<?php
+// Only select products with stock > 0
+$sql = "SELECT * FROM products WHERE quantity > 0";
+$result = mysqli_query($conn, $sql);
 
+while ($row = mysqli_fetch_assoc($result)) {
+?>
+    <div class="card" style="width: 18rem; margin: 8px;">
+        <img src="<?php echo $row['img']; ?>" class="card-img-top">
+        <div class="card-body">
+            <h5 class="card-title"><?php echo $row['name']; ?></h5>
+            <p class="card-text"><?php echo $row['desc']; ?></p>
+            <p>Price: $<?php echo $row['price']; ?></p>
+            <p>Stock: <?php echo $row['quantity']; ?></p>
+            <button class="btn btn-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#buyModal<?php echo $row['id']; ?>">
+                Buy
+            </button>
+        </div>
+    </div>
 
-<form id="pormm">
-  <div class="form-group">
-    <label for="exampleInputEmail1">Email address</label>
-    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
-    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-  </div>
-  <div class="form-group">
-    <label for="exampleInputPassword1">Password</label>
-    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-  </div>
+    <!-- Modal -->
+    <div class="modal fade" id="buyModal<?php echo $row['id']; ?>" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Buy <?php echo $row['name']; ?></h5>
+            <button class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
 
-  <div class="form-group">
-    <label for="exampleInputPassword1">Problem</label>
-   <input type="text" class="form-control" id="problemInput" placeholder="Problem">
+          <div class="modal-body text-center">
+            <img src="<?php echo $row['img']; ?>" class="modal-img">
+            <p>Unit Price: $<?php echo $row['price']; ?></p>
+                <p>Total: $<span id="total<?php echo $row['id']; ?>">
+                        <?php echo $row['price']; ?>
+                            </span></p>
 
-  </div>
-  
-  <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+            <p>Stock: <?php echo $row['quantity']; ?></p>
+            <p>Description: <?php echo $row['desc']; ?></p>
 
+            <div class="d-flex justify-content-center align-items-center gap-2">
+                <button type="button" class="btn btn-outline-secondary" onclick="decreaseQty(<?php echo $row['id']; ?>, <?php echo (float)$row['price']; ?>)">−</button>
+                <input type="number" id="qty<?php echo $row['id']; ?>" value="1" min="1" max="<?php echo $row['quantity']; ?>" class="form-control text-center" style="width:70px;">
+                <button type="button" class="btn btn-outline-secondary" onclick="increaseQty(<?php echo $row['id']; ?>, <?php echo $row['quantity']; ?>, <?php echo (float)$row['price']; ?>)">+</button>
+            </div>
 
-
-
+          </div>
+          <div class="modal-footer">
+            <form method="POST" action="buy.php" onsubmit="setQty(<?php echo $row['id']; ?>)">
+                <input type="hidden" name="product_id" value="<?php echo $row['id']; ?>">
+                <input type="hidden" name="quantity" id="hiddenQty<?php echo $row['id']; ?>">
+                <button type="submit" class="btn btn-primary">Confirm</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+<?php } ?>
+</div>
 
 <!-- Footer -->
 <footer>
@@ -116,6 +163,44 @@
 
 <!-- Bootstrap JS -->
 
-    
+
+
+<script src="bootstrap.bundle.min.js"></script>
+<script>
+function updateTotal(id, price) {
+    let qty = parseInt(document.getElementById('qty' + id).value);
+    price = parseFloat(price);
+
+    if (isNaN(qty) || isNaN(price)) {
+        return;
+    }
+
+    let total = qty * price;
+    document.getElementById('total' + id).innerText = total.toFixed(2);
+}
+
+
+function increaseQty(id, max, price) {
+    let qty = document.getElementById('qty' + id);
+    if (parseInt(qty.value) < max) {
+        qty.value = parseInt(qty.value) + 1;
+        updateTotal(id, price);
+    }
+}
+
+function decreaseQty(id, price) {
+    let qty = document.getElementById('qty' + id);
+    if (parseInt(qty.value) > 1) {
+        qty.value = parseInt(qty.value) - 1;
+        updateTotal(id, price);
+    }
+}
+
+function setQty(id) {
+    document.getElementById('hiddenQty' + id).value =
+        document.getElementById('qty' + id).value;
+}
+</script>
+
 </body>
 </html>
