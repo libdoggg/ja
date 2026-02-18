@@ -54,6 +54,28 @@
             margin-top: auto; /* pushes footer to bottom */
         }
 
+
+        .modal-img {
+    width: 200px;          /* fixed width */
+    height: 200px;         /* fixed height */
+    object-fit: cover;     /* keeps image ratio & crops nicely */
+    border-radius: 8px;
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+.but{
+    background-color:#329649;
+    color:white;
+    border-radius:8px;
+    border: 1px solid #329649;
+    padding:10px 10px 10px 10px;    
+}
+
+
 </style>
 </head>
 <body>
@@ -112,15 +134,19 @@ while ($row = mysqli_fetch_assoc($result)) {
           </div>
 
           <div class="modal-body text-center">
-            <img src="<?php echo $row['img']; ?>" width="150">
-            <p>Price: $<?php echo $row['price']; ?></p>
+            <img src="<?php echo $row['img']; ?>" class="modal-img">
+            <p>Unit Price: $<?php echo $row['price']; ?></p>
+                <p>Total: $<span id="total<?php echo $row['id']; ?>">
+                        <?php echo $row['price']; ?>
+                            </span></p>
+
             <p>Stock: <?php echo $row['quantity']; ?></p>
             <p>Description: <?php echo $row['desc']; ?></p>
 
             <div class="d-flex justify-content-center align-items-center gap-2">
-                <button type="button" class="btn btn-outline-secondary" onclick="decreaseQty(<?php echo $row['id']; ?>)">−</button>
+                <button type="button" class="btn btn-outline-secondary" onclick="decreaseQty(<?php echo $row['id']; ?>, <?php echo (float)$row['price']; ?>)">−</button>
                 <input type="number" id="qty<?php echo $row['id']; ?>" value="1" min="1" max="<?php echo $row['quantity']; ?>" class="form-control text-center" style="width:70px;">
-                <button type="button" class="btn btn-outline-secondary" onclick="increaseQty(<?php echo $row['id']; ?>, <?php echo $row['quantity']; ?>)">+</button>
+                <button type="button" class="btn btn-outline-secondary" onclick="increaseQty(<?php echo $row['id']; ?>, <?php echo $row['quantity']; ?>, <?php echo (float)$row['price']; ?>)">+</button>
             </div>
 
           </div>
@@ -128,7 +154,7 @@ while ($row = mysqli_fetch_assoc($result)) {
             <form method="POST" action="buy.php" onsubmit="setQty(<?php echo $row['id']; ?>)">
                 <input type="hidden" name="product_id" value="<?php echo $row['id']; ?>">
                 <input type="hidden" name="quantity" id="hiddenQty<?php echo $row['id']; ?>">
-                <button type="submit" class="btn btn-primary">Confirm</button>
+                <button type="submit" class="but">Confirm</button>
             </form>
           </div>
         </div>
@@ -149,19 +175,40 @@ while ($row = mysqli_fetch_assoc($result)) {
 
 <script src="bootstrap.bundle.min.js"></script>
 <script>
-function increaseQty(id, max) {
-    let qty = document.getElementById('qty' + id);
-    if (parseInt(qty.value) < max) qty.value = parseInt(qty.value) + 1;
+function updateTotal(id, price) {
+    let qty = parseInt(document.getElementById('qty' + id).value);
+    price = parseFloat(price);
+
+    if (isNaN(qty) || isNaN(price)) {
+        return;
+    }
+
+    let total = qty * price;
+    document.getElementById('total' + id).innerText = total.toFixed(2);
 }
 
-function decreaseQty(id) {
+
+function increaseQty(id, max, price) {
     let qty = document.getElementById('qty' + id);
-    if (parseInt(qty.value) > 1) qty.value = parseInt(qty.value) - 1;
+    if (parseInt(qty.value) < max) {
+        qty.value = parseInt(qty.value) + 1;
+        updateTotal(id, price);
+    }
+}
+
+function decreaseQty(id, price) {
+    let qty = document.getElementById('qty' + id);
+    if (parseInt(qty.value) > 1) {
+        qty.value = parseInt(qty.value) - 1;
+        updateTotal(id, price);
+    }
 }
 
 function setQty(id) {
-    document.getElementById('hiddenQty' + id).value = document.getElementById('qty' + id).value;
+    document.getElementById('hiddenQty' + id).value =
+        document.getElementById('qty' + id).value;
 }
 </script>
+
 </body>
 </html>
