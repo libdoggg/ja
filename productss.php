@@ -126,40 +126,79 @@ while ($row = mysqli_fetch_assoc($result)) {
 
     <!-- Modal -->
     <div class="modal fade" id="buyModal<?php echo $row['id']; ?>" tabindex="-1">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Buy <?php echo $row['name']; ?></h5>
-            <button class="btn-close" data-bs-dismiss="modal"></button>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form method="POST" action="buy.php" onsubmit="setQty(<?php echo $row['id']; ?>)">
+        <div class="modal-header">
+          <h5 class="modal-title">Checkout: <?php echo $row['name']; ?></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+
+        <div class="modal-body">
+          <div class="text-center mb-3">
+            <img src="<?php echo $row['img']; ?>" class="modal-img mb-2">
+            <h6>Unit Price: $<?php echo number_format($row['price'], 2); ?></h6>
+            <h5 class="text-success">Total: $<span id="total<?php echo $row['id']; ?>"><?php echo number_format($row['price'], 2); ?></span></h5>
           </div>
 
-          <div class="modal-body text-center">
-            <img src="<?php echo $row['img']; ?>" class="modal-img">
-            <p>Unit Price: $<?php echo $row['price']; ?></p>
-                <p>Total: $<span id="total<?php echo $row['id']; ?>">
-                        <?php echo $row['price']; ?>
-                            </span></p>
+          <hr>
 
-            <p>Stock: <?php echo $row['quantity']; ?></p>
-            <p>Description: <?php echo $row['desc']; ?></p>
+          <div class="mb-3">
+            <label class="form-label">Full Name</label>
+            <input type="text" name="customer_name" class="form-control" placeholder="John Doe" required>
+          </div>
 
-            <div class="d-flex justify-content-center align-items-center gap-2">
-                <button type="button" class="btn btn-outline-secondary" onclick="decreaseQty(<?php echo $row['id']; ?>, <?php echo (float)$row['price']; ?>)">−</button>
-                <input type="number" id="qty<?php echo $row['id']; ?>" value="1" min="1" max="<?php echo $row['quantity']; ?>" class="form-control text-center" style="width:70px;">
-                <button type="button" class="btn btn-outline-secondary" onclick="increaseQty(<?php echo $row['id']; ?>, <?php echo $row['quantity']; ?>, <?php echo (float)$row['price']; ?>)">+</button>
+          <div class="mb-3">
+            <label class="form-label">Email Address</label>
+            <input type="email" name="customer_email" class="form-control" placeholder="john@example.com" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Delivery Address</label>
+            <textarea name="customer_address" class="form-control" rows="2" placeholder="Street, City, Zip Code" required></textarea>
+          </div>
+
+          <div class="mb-3">
+    <label class="form-label">Payment Method</label>
+    <select name="payment_method" id="paymentMethod<?php echo $row['id']; ?>" class="form-control" onchange="togglePaymentFields(<?php echo $row['id']; ?>)" required>
+        <option value="" disabled selected>Select Payment</option>
+        <option value="COD">Cash on Delivery</option>
+        <option value="Gcash">Gcash</option>
+        <option value="Card">Credit/Debit Card</option>
+    </select>
+</div>
+
+<div id="gcashField<?php echo $row['id']; ?>" class="mb-3" style="display: none;">
+    <label class="form-label">Gcash Number</label>
+    <input type="text" name="payment_details_gcash" class="form-control" placeholder="0912 345 6789">
+</div>
+
+<div id="cardField<?php echo $row['id']; ?>" class="mb-3" style="display: none;">
+    <label class="form-label">Card Number</label>
+    <input type="text" name="payment_details_card" class="form-control" placeholder="XXXX-XXXX-XXXX-XXXX">
+</div>
+
+          <hr>
+
+          <div class="d-flex justify-content-between align-items-center">
+            <span>Quantity:</span>
+            <div class="d-flex align-items-center gap-2">
+              <button type="button" class="btn btn-outline-secondary btn-sm" onclick="decreaseQty(<?php echo $row['id']; ?>, <?php echo (float)$row['price']; ?>)">−</button>
+              <input type="number" id="qty<?php echo $row['id']; ?>" value="1" min="1" max="<?php echo $row['quantity']; ?>" class="form-control text-center" style="width:70px;" readonly>
+              <button type="button" class="btn btn-outline-secondary btn-sm" onclick="increaseQty(<?php echo $row['id']; ?>, <?php echo $row['quantity']; ?>, <?php echo (float)$row['price']; ?>)">+</button>
             </div>
-
-          </div>
-          <div class="modal-footer">
-            <form method="POST" action="buy.php" onsubmit="setQty(<?php echo $row['id']; ?>)">
-                <input type="hidden" name="product_id" value="<?php echo $row['id']; ?>">
-                <input type="hidden" name="quantity" id="hiddenQty<?php echo $row['id']; ?>">
-                <button type="submit" class="but">Confirm</button>
-            </form>
           </div>
         </div>
-      </div>
+
+        <div class="modal-footer">
+          <input type="hidden" name="product_id" value="<?php echo $row['id']; ?>">
+          <input type="hidden" name="quantity" id="hiddenQty<?php echo $row['id']; ?>" value="1">
+          <button type="submit" class="but w-100">Confirm Order</button>
+        </div>
+      </form>
     </div>
+  </div>
+</div>
     
 <?php } ?>
 </div>
@@ -207,6 +246,23 @@ function decreaseQty(id, price) {
 function setQty(id) {
     document.getElementById('hiddenQty' + id).value =
         document.getElementById('qty' + id).value;
+}
+
+function togglePaymentFields(id) {
+    let selection = document.getElementById('paymentMethod' + id).value;
+    let gcashDiv = document.getElementById('gcashField' + id);
+    let cardDiv = document.getElementById('cardField' + id);
+
+    // Reset visibility
+    gcashDiv.style.display = 'none';
+    cardDiv.style.display = 'none';
+
+    // Show specific field based on selection
+    if (selection === 'Gcash') {
+        gcashDiv.style.display = 'block';
+    } else if (selection === 'Card') {
+        cardDiv.style.display = 'block';
+    }
 }
 </script>
 
