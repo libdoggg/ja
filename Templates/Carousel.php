@@ -40,7 +40,7 @@ while ($row = $result->fetch_assoc()) {
         /* Top Search Bar */
         .top-bar {
             width: 100%;
-            background: #0315df;
+            background: red;
             padding: 20px;
             text-align: center;
         }
